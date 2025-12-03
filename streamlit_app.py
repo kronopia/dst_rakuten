@@ -1,8 +1,7 @@
 
-ajouter ds requirements : @st.cache_data
 
-
----
+### projet Titanic 
+# Sprint 9 Data Engineering - 1 Streamlit - 02 Cas Pratique.docx
 
 
 # Streamlit : cliquer sur "Always re-run" ( pr rafraichir automatiquet )
@@ -16,14 +15,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from sklearn.ensemble import RandomForestClassifier 
 from sklearn.svm import SVC
-from sklearn. linear model import LogisticRegression 
+from sklearn.linear_model import LogisticRegression 
 
-from sklearn.metrics import confusion matrix
+from sklearn.metrics import confusion_matrix
 
 import random
 @st.cache_data
@@ -50,15 +49,15 @@ pages=[ "Exploration", "DataVizualization", "Modélisation" ]
 page=st.sidebar.radio( "Aller vers", pages )
 
 
+# Créer un dataframe appelé df permettant de lire le fichier train.csv
+df=pd.read_csv("train.csv")
+
 
 ### 1. Exploration
 
 # Ecrire "Introduction" en haut de la première page 
 if page == pages[0] : 
 	st.write( "### Introduction" )
-
-	# Créer un dataframe appelé df permettant de lire le fichier train.csv
-	df=pd.read_csv("train.csv")
 
 	# Afficher les 10 premières lignes du dataframe df 
 	st.dataframe( df.head(10) )
@@ -78,7 +77,6 @@ if page == pages[0] :
 # Ecrire "DataVizualization" en haut de la deuxième page 
 if page == pages[1] : 
 	st.write("### DataVizualization")
-
 
 	# La variable cible "Survived" prend 2 modalités : 0 si l'individu n'a pas survécu et 1 si l'individu a survécu
 	# Afficher dans un plot la distribution de la variable cible
@@ -130,7 +128,7 @@ if page == pages[1] :
 
 if page == pages [2] :
 	# Ecrire "Modélisation" en haut de la troisième page
-	st-write("### Modélisation")
+	st.write("### Modélisation")
 
 	# Nous faisons de la classification binaire pour prédire si un passager survit ou non au naufrage du Titanic.
 	# Preprocessing du dataframe
@@ -141,29 +139,31 @@ if page == pages [2] :
 	# Variable target
 	y = df[ 'Survived']
 	# Variables explicatives catégorielles 
-	X_cat = df[['Pclass', 'Sex', 'Embarked' ]
+	X_cat = df[['Pclass', 'Sex',  'Embarked']]
 	# Variables explicatives numériques
-	X num = df[['Age', 'Fare', 'SibSp', 'Parch']]
-		
+	X_num = df[['Age', 'Fare', 'SibSp', 'Parch']]
+	
 	# Remplacer les valeurs manquantes des variables catégorielles par le mode 
 	for col in X_cat.columns:
-		X_cat [col] = X_cat[col]-fillna(X_cat[col].mode() [0])
+		X_cat [col] = X_cat[col].fillna(X_cat[col].mode() [0])
 
 	# Remplacer les valeurs manquantes des variables numériques par la médiane
 	for col in X_num.columns:
-		X_num[col] = X_num[col] -fillna(X_num[col].median)
+		X_num[col] = X_num[col].fillna(X_num[col].median())
 
 	# Encoder les variables catégorielles
 	X_cat_scaled = pd.get_dummies(X_cat, columns=X_cat.columns)
+	
 
 	# Concaténer les variables explicatives encodées et sans valeurs manquantes pour obtenir un dataframe X clean.
-	X = pd.concat([X_cat_scaled, X num], axis = 1)
+	X = pd.concat([X_cat_scaled, X_num], axis = 1)
+
 
 	# Séparer les données en un ensemble d'entrainement et un ensemble test	
-	X_train, X_test, y_train, _test = train_test_split(X, y, test_size=0.2, random_state=123)
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
 
 	# Standardiser les valeurs numériques
-	scaler = StandardScaler
+	scaler = StandardScaler()
 	X_train[X_num.columns] = scaler.fit_transform(X_train[X_num.columns])
 	X_test[X_num.columns] = scaler.transform(X_test[X_num.columns])
 
@@ -231,6 +231,8 @@ if page == pages [2] :
 # loaded_model = pickle.load(open("model", 'rb'))
 # ou 
 # DL : load model keras h5 ... 
+
+
 
 
 
